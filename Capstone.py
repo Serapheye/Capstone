@@ -102,13 +102,16 @@ class View:
 
     def view_one(user='manager'):
         if user=='manager':
-            insert = input('Insert User ID of the user you want to see: ')
-            try:
-                query = 'SELECT user_id, first_name, last_name, phone, email, password, active, date_created, hire_date, user_type FROM Users WHERE user_id = ? ORDER BY last_name, first_name'
-                results = cursor.execute(query, (insert,)).fetchall()
-                View.print_format_one(results, query)
-            except:
-                print('Please enter a valid ID.')
+            while True:
+                insert = input('Insert User ID of the user you want to see: ')
+                try:
+                    query = 'SELECT user_id, first_name, last_name, phone, email, password, active, date_created, hire_date, user_type FROM Users WHERE user_id = ? ORDER BY last_name, first_name'
+                    results = cursor.execute(query, (insert,)).fetchall()
+                    View.print_format_one(results, query)
+                    break
+                except:
+                    print('Please enter a valid ID.')
+                    continue
         else:
             insert = token
         try:
@@ -175,7 +178,13 @@ class Add:
                     break
                 else:
                     print('Passwords must match')
-            user = input('User Type: ("user" or "manager") ')
+            while True:
+                user = input('User Type: ("user" or "manager") ')
+                if user != 'user' or user != 'manager':
+                    print('The user needs to be a "user" or "manager", please try again.')
+                    continue
+                else:
+                    break
             try:
                 cursor.execute('INSERT INTO Users (first_name, last_name, phone, email, password, user_type) VALUES (?, ?, ?, ?, ?, ?)', (first, last, phone, email, hashed, user))
                 connect.commit()
